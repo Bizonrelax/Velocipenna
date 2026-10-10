@@ -14,12 +14,22 @@ public final class AnalysisResult {
     private final int pureCyrillicWords;
     private final int mixedScriptWords;
     private final String mixedScriptReport;
+    private final String charsetName;
 
     public AnalysisResult(int totalChars, int cyrillicCount,
                           int[] upperCounts, int[] lowerCounts,
                           int yoUpper, int yoLower,
                           int pureCyrillicWords, int mixedScriptWords,
                           String mixedScriptReport) {
+        this(totalChars, cyrillicCount, upperCounts, lowerCounts, yoUpper, yoLower,
+                pureCyrillicWords, mixedScriptWords, mixedScriptReport, "UTF-8");
+    }
+
+    public AnalysisResult(int totalChars, int cyrillicCount,
+                          int[] upperCounts, int[] lowerCounts,
+                          int yoUpper, int yoLower,
+                          int pureCyrillicWords, int mixedScriptWords,
+                          String mixedScriptReport, String charsetName) {
         this.totalChars = totalChars;
         this.cyrillicCount = cyrillicCount;
         this.upperCounts = upperCounts;
@@ -29,6 +39,12 @@ public final class AnalysisResult {
         this.pureCyrillicWords = pureCyrillicWords;
         this.mixedScriptWords = mixedScriptWords;
         this.mixedScriptReport = mixedScriptReport;
+        this.charsetName = charsetName;
+    }
+
+    /** Name of the charset that was actually used to read the source file. */
+    public String getCharsetName() {
+        return charsetName;
     }
 
     public int getTotalChars() {
@@ -53,6 +69,16 @@ public final class AnalysisResult {
 
     public int getLowerCount(int index) {
         return lowerCounts[index];
+    }
+
+    /** Copy of the 32-slot per-letter upper-case tallies (А..Я without Ё). */
+    public int[] getUpperCountsArray() {
+        return upperCounts.clone();
+    }
+
+    /** Copy of the 32-slot per-letter lower-case tallies (а..я without ё). */
+    public int[] getLowerCountsArray() {
+        return lowerCounts.clone();
     }
 
     public int getYoUpper() {

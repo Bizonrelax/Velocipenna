@@ -20,6 +20,23 @@ public final class TextAnalyzer {
      * Reads a file with the given charset and analyzes its content.
      */
     public AnalysisResult analyzeFile(File file, Charset charset) throws IOException {
+        String content = read(file, charset);
+        AnalysisResult base = analyze(content);
+        return new AnalysisResult(base.getTotalChars(), base.getCyrillicCount(),
+                base.getUpperCountsArray(), base.getLowerCountsArray(),
+                base.getYoUpper(), base.getYoLower(),
+                base.getPureCyrillicWords(), base.getMixedScriptWords(),
+                base.getMixedScriptReport(), charset.name());
+    }
+
+    /**
+     * Detects the encoding (UTF-8 or cp1251), reads and analyzes the file.
+     */
+    public AnalysisResult analyzeFileAutoDetect(File file) throws IOException {
+        return analyzeFile(file, CharsetDetector.detect(file));
+    }
+
+    private String read(File file, Charset charset) throws IOException {
         StringBuilder sb = new StringBuilder();
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(new FileInputStream(file), charset));
@@ -32,7 +49,11 @@ public final class TextAnalyzer {
         } finally {
             reader.close();
         }
-        return analyze(sb.toString());
+        // strip UTF-8 BOM if present
+        if (sb.length() > 0 && sb.charAt(0) == '\uFEFF') {
+            sb.deleteCharAt(0);
+        }
+        return sb.toString();
     }
 
     /**
