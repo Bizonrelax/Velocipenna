@@ -30,7 +30,24 @@ To maintain strict compliance with clean software development methodologies, Vel
 *   **Build Automation:** Apache Maven
 *   **Integrated Environment:** Eclipse IDE for Java Developers (Version 2026-06 or newer)
 
-## 5. License
+## 5. Build & Run
+
+Requirements on your machine: JDK 8 (or newer JRE to run), Apache Maven 3.6+.
+
+```bat
+:: Build the executable fat-JAR + run unit tests
+mvn clean package
+
+:: Launch the GUI (single jar, no extra files needed)
+java -jar target\velocipenna.jar
+```
+
+Eclipse workflow (IDE for Java Developers 2026-06):
+1. `File > Import > Maven > Existing Maven Projects` — select the repository root (`pom.xml`).
+2. Eclipse runs the build automatically; right-click `VelocipennaApp.java > Run As > Java Application`.
+3. If Eclipse asks, let it add the JRE System library (JavaSE-1.8).
+
+## 6. License
 
 This project is dedicated to the public domain under the terms of **The Unlicense**. You are completely free to copy, modify, publish, or distribute this software in both source and compiled forms for any purpose, commercial or non-commercial.
 
@@ -83,6 +100,23 @@ ___
 *   **Сборщик проекта:** Apache Maven
 *   **Инструмент разработки:** Eclipse IDE for Java Developers (версия 2026-06 или новее)
 
-## 5. Лицензия
+## 5. Сборка и запуск
+
+Требуется на твоём ноутбуке: JDK 8 (или новее — для запуска), Apache Maven 3.6+.
+
+```bat
+:: Собрать исполняемый fat-JAR и прогнать юнит-тесты
+mvn clean package
+
+:: Запустить GUI (один файл, ничего дополнительно не нужно)
+java -jar target\velocipenna.jar
+```
+
+Работа в Eclipse (IDE for Java Developers 2026-06):
+1. `File > Import > Maven > Existing Maven Projects` — выбери корень репозитория (файл `pom.xml`).
+2. Eclipse соберёт проект сам; правый клик по `VelocipennaApp.java` → `Run As > Java Application`.
+3. Если Eclipse предложит подключить JRE System library (JavaSE-1.8) — согласись.
+
+## 6. Лицензия
 
 Этот проект передан в общественное достояние в рамках лицензии **The Unlicense**. Ты можешь свободно копировать, изменять, публиковать и распространять это программное обеспечение как в исходном, так и в скомпилированном виде для любых целей, включая коммерческие.
