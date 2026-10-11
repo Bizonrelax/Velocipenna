@@ -120,6 +120,12 @@ public final class StatisticsDialog {
         final JSpinner spinB = new JSpinner(
                 new SpinnerNumberModel(config.getBgB(), 0, 255, 1));
 
+        // Label components must be created once and reused in both the
+        // horizontal and vertical groups; otherwise GroupLayout throws
+        // "is not attached to a vertical group".
+        final JLabel lblR = new JLabel("R");
+        final JLabel lblG = new JLabel("G");
+        final JLabel lblB = new JLabel("B");
         JLabel lblCreated = new JLabel(Messages.get(lang, "about.created") + ExtendedWindow.PROGRAM_CREATED);
         JLabel lblSource = new JLabel(Messages.get(lang, "about.source"));
         JLabel lblUrl = new JLabel(Messages.get(lang, "about.url"));
@@ -186,11 +192,11 @@ public final class StatisticsDialog {
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(lblFont)
                         .addComponent(fontSpinner, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(new JLabel("R"))
+                        .addComponent(lblR)
                         .addComponent(spinR, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(new JLabel("G"))
+                        .addComponent(lblG)
                         .addComponent(spinG, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(new JLabel("B"))
+                        .addComponent(lblB)
                         .addComponent(spinB, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(btnCopy)
@@ -204,8 +210,11 @@ public final class StatisticsDialog {
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(lblFont)
                                 .addComponent(fontSpinner)
+                                .addComponent(lblR)
                                 .addComponent(spinR)
+                                .addComponent(lblG)
                                 .addComponent(spinG)
+                                .addComponent(lblB)
                                 .addComponent(spinB))
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(btnCopy)
