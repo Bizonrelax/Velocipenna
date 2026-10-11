@@ -61,7 +61,25 @@ public final class StatisticsDialog {
 
         final JDialog dlg = new JDialog(parent, Messages.get(lang, "stats.title"), false);
         dlg.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        JTextAreaHolder txt = new JTextAreaHolder(sb.toString());
+        final JTextAreaHolder txt = new JTextAreaHolder(sb.toString());
+        // The statistics window used to render with a too-small font: bump the
+        // base UI size and let the user tune it live with a dedicated spinner.
+        final int statsBaseFont = Math.max(16, config.getFontSize());
+        txt.setFont(txt.getFont().deriveFont((float) statsBaseFont));
+        final JSpinner fontSpinner = new JSpinner(
+                new SpinnerNumberModel(statsBaseFont, 8, 48, 1));
+        JLabel lblFont = new JLabel(Messages.get(lang, "lbl.font"));
+        fontSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
+            @Override
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                int fs = ((Number) fontSpinner.getValue()).intValue();
+                AppearanceUtil.apply(dlg.getContentPane(),
+                        AppearanceUtil.backgroundOf(config), fs);
+                txt.setFont(txt.getFont().deriveFont((float) fs));
+                dlg.getContentPane().revalidate();
+                dlg.getContentPane().repaint();
+            }
+        });
         JButton btnCopy = new JButton(Messages.get(lang, "btn.buffer"));
         btnCopy.setToolTipText(Messages.get(lang, "tip.buffer"));
         btnCopy.addActionListener(new ActionListener() {
@@ -83,13 +101,20 @@ public final class StatisticsDialog {
         layout.setAutoCreateContainerGaps(true);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addComponent(txt)
+                .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblFont)
+                        .addComponent(fontSpinner, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createSequentialGroup().addComponent(btnCopy).addComponent(btnClose)));
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(txt)
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(lblFont)
+                                .addComponent(fontSpinner))
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(btnCopy).addComponent(btnClose))));
-        applyMainWindowAppearance(dlg.getContentPane(), config);
+        AppearanceUtil.apply(dlg.getContentPane(), AppearanceUtil.backgroundOf(config), statsBaseFont);
+        txt.setFont(txt.getFont().deriveFont((float) statsBaseFont));
         dlg.pack();
         dlg.setSize(520, 300);
         dlg.setLocationRelativeTo(parent);
