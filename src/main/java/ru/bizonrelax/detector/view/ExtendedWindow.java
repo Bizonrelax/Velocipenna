@@ -35,8 +35,8 @@ import ru.bizonrelax.detector.i18n.Messages;
 public class ExtendedWindow extends javax.swing.JFrame {
 
     private static final long serialVersionUID = 1L;
-    /** Program creation date shown in About (fixed by spec). */
-    public static final String PROGRAM_CREATED = "23.09.2025";
+    /** Program creation date shown in About (updated per spec to 11.10.2026). */
+    public static final String PROGRAM_CREATED = "11.10.2026";
 
     private final transient MainWindow main;
     private final ConfigStore store;
@@ -189,6 +189,7 @@ public class ExtendedWindow extends javax.swing.JFrame {
                                 .addComponent(btnStats))));
         pack();
         setMinimumSize(new Dimension(520, 320));
+        StatisticsDialog.enableMouseWheelScrolling(getContentPane());
     }
 
     /** Applies all localized labels/tooltips for the current language. */

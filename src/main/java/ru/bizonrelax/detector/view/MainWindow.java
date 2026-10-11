@@ -256,6 +256,7 @@ public final class MainWindow extends JFrame {
         setSize(config.getWidth(), config.getHeight());
         setLocation(config.getX() >= 0 ? config.getX() : 80,
                 config.getY() >= 0 ? config.getY() : 80);
+        StatisticsDialog.enableMouseWheelScrolling(getContentPane());
 
         radioSpinner.setSelected(config.isBgSpinnerMode());
         radioPalette.setSelected(!config.isBgSpinnerMode());
@@ -442,6 +443,16 @@ public final class MainWindow extends JFrame {
                 ((JPanel) c).setOpaque(false);
             }
         }
+    }
+
+    /**
+     * Refreshes this window's appearance from the current config (used when
+     * secondary windows like About change background/font settings live).
+     */
+    public void refreshAppearance() {
+        applyBackground();
+        getContentPane().revalidate();
+        getContentPane().repaint();
     }
 
     private void showExtendedWindow() {
