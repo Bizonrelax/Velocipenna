@@ -12,11 +12,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.WindowConstants;
 
 import ru.bizonrelax.detector.config.AppConfig;
@@ -86,6 +93,7 @@ public final class StatisticsDialog {
         dlg.pack();
         dlg.setSize(520, 300);
         dlg.setLocationRelativeTo(parent);
+        enableMouseWheelScrolling(dlg.getContentPane());
         dlg.setVisible(true);
     }
 
@@ -97,6 +105,20 @@ public final class StatisticsDialog {
         final String lang = config.getLanguage();
         JDialog dlg = new JDialog(parent, Messages.get(lang, "about.title"), false);
         dlg.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+        // Font size spinner: changes the text size inside the About window live.
+        final JSpinner fontSpinner = new JSpinner(
+                new SpinnerNumberModel(config.getFontSize(), 8, 48, 1));
+        JLabel lblFont = new JLabel(Messages.get(lang, "lbl.font"));
+
+        // Background color spinners R/G/B: change the About window background
+        // live (and are reflected in the shared appearance of all windows).
+        final JSpinner spinR = new JSpinner(
+                new SpinnerNumberModel(config.getBgR(), 0, 255, 1));
+        final JSpinner spinG = new JSpinner(
+                new SpinnerNumberModel(config.getBgG(), 0, 255, 1));
+        final JSpinner spinB = new JSpinner(
+                new SpinnerNumberModel(config.getBgB(), 0, 255, 1));
 
         JLabel lblCreated = new JLabel(Messages.get(lang, "about.created") + ExtendedWindow.PROGRAM_CREATED);
         JLabel lblSource = new JLabel(Messages.get(lang, "about.source"));
@@ -128,6 +150,30 @@ public final class StatisticsDialog {
             }
         });
 
+        // Live appearance updates from the spinners (font size + R/G/B color).
+        final JTextAreaHolder txtRef = txt;
+        javax.swing.event.ChangeListener appearanceListener = new javax.swing.event.ChangeListener() {
+            @Override
+            public void stateChanged(javax.swing.event.ChangeEvent e) {
+                int fs = ((Number) fontSpinner.getValue()).intValue();
+                config.setFontSize(fs);
+                int r = ((Number) spinR.getValue()).intValue();
+                int g = ((Number) spinG.getValue()).intValue();
+                int b = ((Number) spinB.getValue()).intValue();
+                config.setBackgroundRgb(r, g, b);
+                AppearanceUtil.apply(dlg.getContentPane(),
+                        AppearanceUtil.backgroundOf(config), fs);
+                txtRef.setFont(txtRef.getFont().deriveFont((float) Math.max(8, fs)));
+                dlg.getContentPane().revalidate();
+                dlg.getContentPane().repaint();
+                main.refreshAppearance();
+            }
+        };
+        fontSpinner.addChangeListener(appearanceListener);
+        spinR.addChangeListener(appearanceListener);
+        spinG.addChangeListener(appearanceListener);
+        spinB.addChangeListener(appearanceListener);
+
         GroupLayout layout = new GroupLayout(dlg.getContentPane());
         dlg.getContentPane().setLayout(layout);
         layout.setAutoCreateGaps(true);
@@ -138,6 +184,15 @@ public final class StatisticsDialog {
                 .addComponent(lblUrl)
                 .addComponent(txt)
                 .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblFont)
+                        .addComponent(fontSpinner, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(new JLabel("R"))
+                        .addComponent(spinR, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(new JLabel("G"))
+                        .addComponent(spinG, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(new JLabel("B"))
+                        .addComponent(spinB, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createSequentialGroup()
                         .addComponent(btnCopy)
                         .addComponent(btnClose)));
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -147,12 +202,19 @@ public final class StatisticsDialog {
                         .addComponent(lblUrl)
                         .addComponent(txt)
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(lblFont)
+                                .addComponent(fontSpinner)
+                                .addComponent(spinR)
+                                .addComponent(spinG)
+                                .addComponent(spinB))
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(btnCopy)
                                 .addComponent(btnClose))));
         applyMainWindowAppearance(dlg.getContentPane(), config);
         dlg.pack();
-        dlg.setSize(560, 380);
+        dlg.setSize(560, 420);
         dlg.setLocationRelativeTo(parent);
+        enableMouseWheelScrolling(dlg.getContentPane());
         dlg.setVisible(true);
     }
 
@@ -202,7 +264,35 @@ public final class StatisticsDialog {
                                 .addComponent(save).addComponent(close))));
         dlg.pack();
         dlg.setLocationRelativeTo(parent);
+        enableMouseWheelScrolling(dlg.getContentPane());
         dlg.setVisible(true);
+    }
+
+    /**
+     * Makes the mouse wheel scroll any JScrollPane found inside the given
+     * container, even when the pointer is over a child component that does
+     * not propagate wheel events (text areas, labels, buttons). Attached to
+     * every window: main, extended, statistics, about and report editor.
+     */
+    static void enableMouseWheelScrolling(java.awt.Container root) {
+        for (java.awt.Component comp : root.getComponents()) {
+            if (comp instanceof JScrollPane) {
+                final JScrollPane sp = (JScrollPane) comp;
+                sp.addMouseWheelListener(new MouseWheelListener() {
+                    @Override
+                    public void mouseWheelMoved(MouseWheelEvent e) {
+                        javax.swing.JScrollBar vbar = sp.getVerticalScrollBar();
+                        if (vbar != null && vbar.isEnabled()) {
+                            int notches = e.getWheelRotation();
+                            vbar.setValue(vbar.getValue() + notches * vbar.getUnitIncrement());
+                        }
+                    }
+                });
+            }
+            if (comp instanceof java.awt.Container) {
+                enableMouseWheelScrolling((java.awt.Container) comp);
+            }
+        }
     }
 
     public static String formatDuration(long seconds) {
