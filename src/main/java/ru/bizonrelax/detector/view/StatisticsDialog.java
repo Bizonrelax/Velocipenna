@@ -35,8 +35,13 @@ public final class StatisticsDialog {
     private StatisticsDialog() {
     }
 
+    /**
+     * Non-modal statistics window. Shares the main-window appearance settings
+     * (background color with auto font contrast, UI font size) via
+     * AppearanceUtil, as required by TZ.md (Dop-10).
+     */
     public static void show(java.awt.Frame parent, AppConfig config, MainWindow main) {
-        String lang = config.getLanguage();
+        final String lang = config.getLanguage();
         StringBuilder sb = new StringBuilder();
         sb.append(Messages.get(lang, "stats.firstlaunch"))
           .append(config.getFirstLaunchDate().isEmpty() ? "?" : config.getFirstLaunchDate())
@@ -47,20 +52,58 @@ public final class StatisticsDialog {
         sb.append(Messages.get(lang, "stats.exports")).append(formatSize(config.getTotalExportedBytes())).append('\n');
         sb.append(Messages.get(lang, "stats.opened")).append(config.getTotalOpenedFiles()).append('\n');
 
-        JOptionPane.showMessageDialog(parent, sb.toString(),
-                Messages.get(lang, "stats.title"), JOptionPane.INFORMATION_MESSAGE);
+        final JDialog dlg = new JDialog(parent, Messages.get(lang, "stats.title"), false);
+        dlg.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        JTextAreaHolder txt = new JTextAreaHolder(sb.toString());
+        JButton btnCopy = new JButton(Messages.get(lang, "btn.buffer"));
+        btnCopy.setToolTipText(Messages.get(lang, "tip.buffer"));
+        btnCopy.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                main.copyToClipboard(txt.getText());
+            }
+        });
+        JButton btnClose = new JButton(Messages.get(lang, "btn.close"));
+        btnClose.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dlg.dispose();
+            }
+        });
+        GroupLayout layout = new GroupLayout(dlg.getContentPane());
+        dlg.getContentPane().setLayout(layout);
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
+        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addComponent(txt)
+                .addGroup(layout.createSequentialGroup().addComponent(btnCopy).addComponent(btnClose)));
+        layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                        .addComponent(txt)
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(btnCopy).addComponent(btnClose))));
+        applyMainWindowAppearance(dlg.getContentPane(), config);
+        dlg.pack();
+        dlg.setSize(520, 300);
+        dlg.setLocationRelativeTo(parent);
+        dlg.setVisible(true);
     }
 
+    /**
+     * Non-modal About window. Has the same appearance settings as the main
+     * window (TZ.md item 7): background color, auto font contrast, font size.
+     */
     public static void showAbout(java.awt.Frame parent, AppConfig config, final MainWindow main) {
         final String lang = config.getLanguage();
         JDialog dlg = new JDialog(parent, Messages.get(lang, "about.title"), false);
-        dlg.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        dlg.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         JLabel lblCreated = new JLabel(Messages.get(lang, "about.created") + ExtendedWindow.PROGRAM_CREATED);
         JLabel lblSource = new JLabel(Messages.get(lang, "about.source"));
         JLabel lblUrl = new JLabel(Messages.get(lang, "about.url"));
         JTextAreaHolder txt = new JTextAreaHolder(
-                Messages.get(lang, "about.desc") + "\n\n" + Messages.get(lang, "about.usage"));
+                Messages.get(lang, "about.desc") + "\n\n" + Messages.get(lang, "about.usage")
+                        + "\n\n" + Messages.get(lang, "about.build"));
         JButton btnCopy = new JButton(Messages.get(lang, "btn.buffer"));
         btnCopy.setToolTipText(Messages.get(lang, "tip.buffer"));
         btnCopy.addActionListener(new ActionListener() {
@@ -77,7 +120,7 @@ public final class StatisticsDialog {
                 main.copyToClipboard(sb.toString());
             }
         });
-        JButton btnClose = new JButton(Messages.get(lang, "btn.closeall"));
+        JButton btnClose = new JButton(Messages.get(lang, "btn.close"));
         btnClose.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -106,10 +149,17 @@ public final class StatisticsDialog {
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(btnCopy)
                                 .addComponent(btnClose))));
+        applyMainWindowAppearance(dlg.getContentPane(), config);
         dlg.pack();
-        dlg.setSize(560, 340);
+        dlg.setSize(560, 380);
         dlg.setLocationRelativeTo(parent);
         dlg.setVisible(true);
+    }
+
+    /** Applies main-window look (bg + contrast + font size) to a secondary window. */
+    private static void applyMainWindowAppearance(java.awt.Container content,
+                                                  AppConfig config) {
+        AppearanceUtil.apply(content, AppearanceUtil.backgroundOf(config), config.getFontSize());
     }
 
     /** Editable report window (Dop-9): shows current report text, can be saved back. */
