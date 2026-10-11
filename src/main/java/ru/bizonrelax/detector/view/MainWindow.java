@@ -88,6 +88,7 @@ public final class MainWindow extends JFrame {
     private File lastFile;
     private String currentReport = "";
     private ExtendedWindow extendedWindow;
+    private TicTacToeWindow ticTacToeWindow;
     private boolean restoring = true;
     private final long sessionStartMillis = System.currentTimeMillis();
     private long lastFlushMillis = System.currentTimeMillis();
@@ -332,11 +333,15 @@ public final class MainWindow extends JFrame {
         if (extendedWindow != null) {
             extendedWindow.applyLanguage();
         }
+        if (ticTacToeWindow != null) {
+            ticTacToeWindow.applyLanguage();
+        }
         revalidate();
     }
 
     void rebuildWindowsRegistry() {
         extendedWindow = null;
+        ticTacToeWindow = null;
     }
 
     /** Immediate full save (geometry, fonts, colors, paths, text, stats). */
@@ -461,6 +466,16 @@ public final class MainWindow extends JFrame {
         }
         extendedWindow.setVisible(true);
         extendedWindow.toFront();
+    }
+
+    /** Opens (or reuses) the tic-tac-toe window ("Кре" button in Доп). */
+    public void showTicTacToe() {
+        if (ticTacToeWindow == null) {
+            ticTacToeWindow = new TicTacToeWindow(this);
+        }
+        ticTacToeWindow.applyAppearance();
+        ticTacToeWindow.setVisible(true);
+        ticTacToeWindow.toFront();
     }
 
     private void chooseAndAnalyze() {

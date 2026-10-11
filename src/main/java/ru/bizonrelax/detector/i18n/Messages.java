@@ -82,7 +82,16 @@ public final class Messages {
             "tip.lang", "\u0421\u043C\u0435\u043D\u0430 \u044F\u0437\u044B\u043A\u0430 \u0438\u043D\u0442\u0435\u0440\u0444\u0435\u0439\u0441\u0430",
             "tip.savecfg", "\u0421\u043E\u0445\u0440\u0430\u043D\u0438\u0442\u044C \u043D\u0430\u0441\u0442\u0440\u043E\u0439\u043A\u0438",
             "tip.servfiles", "\u0421\u043B\u0443\u0436\u0435\u0431\u043D\u044B\u0435 \u0444\u0430\u0439\u043B\u044B. \u041F\u043E\u043A\u0430\u0437\u0430\u0442\u044C \u0441\u043B\u0443\u0436\u0435\u0431\u043D\u044B\u0435 \u0444\u0430\u0439\u043B\u044B \u043D\u0430\u0441\u0442\u0440\u043E\u0435\u043A \u0438 \u043F\u0440\u043E\u0447\u0435\u0435",
-            "tip.stats", "\u041F\u043E\u043A\u0430\u0437\u0430\u0442\u044C \u0441\u0442\u0430\u0442\u0438\u0441\u0442\u0438\u043A\u0443"
+            "tip.stats", "\u041F\u043E\u043A\u0430\u0437\u0430\u0442\u044C \u0441\u0442\u0430\u0442\u0438\u0441\u0442\u0438\u043A\u0443",
+            "btn.tictactoe", "\u041A\u0440",
+            "tip.tictactoe", "\u0418\u0433\u0440\u0430 \u00AB\u041A\u0440\u0435\u0441\u0442\u0438\u043A\u0438-\u043D\u043E\u043B\u0438\u043A\u0438\u00BB",
+            "ttt.draw", "\u041D\u0438\u0447\u044C\u044F.",
+            "ttt.lose", "\u041F\u043E\u0431\u0435\u0434\u0438\u043B \u043A\u043E\u043C\u043F\u044C\u044E\u0442\u0435\u0440 (O).",
+            "ttt.new", "\u041D\u043E\u0432\u0430\u044F \u0438\u0433\u0440\u0430",
+            "ttt.tip.new", "\u041D\u0430\u0447\u0430\u0442\u044C \u043D\u043E\u0432\u0443\u044E \u0438\u0433\u0440\u0443",
+            "ttt.title", "\u041A\u0440\u0435\u0441\u0442\u0438\u043A\u0438-\u043D\u043E\u043B\u0438\u043A\u0438",
+            "ttt.turn", "\u0412\u0430\u0448 \u0445\u043E\u0434: X",
+            "ttt.win", "\u0412\u044B \u043F\u043E\u0431\u0435\u0434\u0438\u043B\u0438!"
     );
 
     private static final Map<String, String> EN = map(
@@ -151,7 +160,16 @@ public final class Messages {
             "tip.lang", "Switch interface language",
             "tip.savecfg", "Save settings",
             "tip.servfiles", "Service files. Show settings files folder",
-            "tip.stats", "Show statistics"
+            "tip.stats", "Show statistics",
+            "btn.tictactoe", "TTT",
+            "tip.tictactoe", "Tic-tac-toe game",
+            "ttt.draw", "Draw.",
+            "ttt.lose", "Computer (O) wins.",
+            "ttt.new", "New game",
+            "ttt.tip.new", "Start a new game",
+            "ttt.title", "Tic-tac-toe",
+            "ttt.turn", "Your turn: X",
+            "ttt.win", "You win!"
     );
 
     private static final Map<String, String> DE = map(
@@ -220,7 +238,16 @@ public final class Messages {
             "tip.lang", "Oberfl\u00E4chensprache wechseln",
             "tip.savecfg", "Einstellungen speichern",
             "tip.servfiles", "Dienstdateien: Einstellungsordner anzeigen",
-            "tip.stats", "Statistik anzeigen"
+            "tip.stats", "Statistik anzeigen",
+            "btn.tictactoe", "Kre",
+            "tip.tictactoe", "Spiel \u00ABKreuz und Kreis\u00BB ( Tic-Tac-Toe)",
+            "ttt.draw", "Unentschieden.",
+            "ttt.lose", "Der Computer (O) gewinnt.",
+            "ttt.new", "Neues Spiel",
+            "ttt.tip.new", "Ein neues Spiel starten",
+            "ttt.title", "Tic-Tac-Toe",
+            "ttt.turn", "Sie sind dran: X",
+            "ttt.win", "Sie gewinnen!"
     );
 
     private static final Map<String, String> ES = map(
@@ -289,7 +316,16 @@ public final class Messages {
             "tip.lang", "Cambiar idioma de la interfaz",
             "tip.savecfg", "Guardar ajustes",
             "tip.servfiles", "Archivos de servicio: mostrar carpeta de ajustes",
-            "tip.stats", "Mostrar estad\u00EDsticas"
+            "tip.stats", "Mostrar estad\u00EDsticas",
+            "btn.tictactoe", "TaTeTi",
+            "tip.tictactoe", "Juego \u00ABtres en l\u00EDnea\u00BB",
+            "ttt.draw", "Empate.",
+            "ttt.lose", "Gana la computadora (O).",
+            "ttt.new", "Nueva partida",
+            "ttt.tip.new", "Empezar una nueva partida",
+            "ttt.title", "Tres en l\u00EDnea",
+            "ttt.turn", "Tu turno: X",
+            "ttt.win", "\u00A1Ganaste!"
     );
 
     private static final Map<String, String> ZH = map(
@@ -358,7 +394,16 @@ public final class Messages {
             "tip.lang", "\u5207\u6362\u754C\u9762\u8BED\u8A00",
             "tip.savecfg", "\u4FDD\u5B58\u8BBE\u7F6E",
             "tip.servfiles", "\u670D\u52A1\u6587\u4EF6\uFF1A\u663E\u793A\u8BBE\u7F6E\u6587\u4EF6\u5939",
-            "tip.stats", "\u663E\u793A\u7EDF\u8BA1"
+            "tip.stats", "\u663E\u793A\u7EDF\u8BA1",
+            "btn.tictactoe", "\u4E95",
+            "tip.tictactoe", "\u4E95\u5B57\u68CB\u6E38\u620F",
+            "ttt.draw", "\u5E73\u5C40\u3002",
+            "ttt.lose", "\u7535\u8111\uFF08O\uFF09\u83B7\u80DC\u3002",
+            "ttt.new", "\u65B0\u6E38\u620F",
+            "ttt.tip.new", "\u5F00\u59CB\u65B0\u6E38\u620F",
+            "ttt.title", "\u4E95\u5B57\u68CB",
+            "ttt.turn", "\u8F6E\u5230\u4F60\uFF1AX",
+            "ttt.win", "\u4F60\u8D62\u4E86\uFF01"
     );
 
     private static final Map<String, Map<String, String>> ALL = new LinkedHashMap<String, Map<String, String>>();

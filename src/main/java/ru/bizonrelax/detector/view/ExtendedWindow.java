@@ -53,6 +53,7 @@ public class ExtendedWindow extends javax.swing.JFrame {
     private JButton btnLang;
     private JButton btnEditReport;
     private JButton btnStats;
+    private JButton btnTicTacToe;
     private JLabel lblExtTitle;
     private JSeparator sep;
     private JScrollPane scroll;
@@ -106,6 +107,7 @@ public class ExtendedWindow extends javax.swing.JFrame {
         btnLang = new JButton();
         btnEditReport = new JButton();
         btnStats = new JButton();
+        btnTicTacToe = new JButton();
         sep = new JSeparator();
 
         btnServFiles.addActionListener(new ActionListener() {
@@ -144,6 +146,12 @@ public class ExtendedWindow extends javax.swing.JFrame {
                 StatisticsDialog.show(ExtendedWindow.this, config, main);
             }
         });
+        btnTicTacToe.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                main.showTicTacToe();
+            }
+        });
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -167,7 +175,8 @@ public class ExtendedWindow extends javax.swing.JFrame {
                         .addComponent(btnSaveCfg)
                         .addComponent(btnLang)
                         .addComponent(btnEditReport)
-                        .addComponent(btnStats)));
+                        .addComponent(btnStats)
+                        .addComponent(btnTicTacToe)));
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(lblExtTitle)
@@ -186,7 +195,8 @@ public class ExtendedWindow extends javax.swing.JFrame {
                                 .addComponent(btnSaveCfg)
                                 .addComponent(btnLang)
                                 .addComponent(btnEditReport)
-                                .addComponent(btnStats))));
+                                .addComponent(btnStats)
+                                .addComponent(btnTicTacToe))));
         pack();
         setMinimumSize(new Dimension(520, 320));
         StatisticsDialog.enableMouseWheelScrolling(getContentPane());
@@ -213,6 +223,8 @@ public class ExtendedWindow extends javax.swing.JFrame {
         btnEditReport.setToolTipText(Messages.get(lang, "tip.editreport"));
         btnStats.setText(Messages.get(lang, "btn.stats"));
         btnStats.setToolTipText(Messages.get(lang, "tip.stats"));
+        btnTicTacToe.setText(Messages.get(lang, "btn.tictactoe"));
+        btnTicTacToe.setToolTipText(Messages.get(lang, "tip.tictactoe"));
         applyFonts();
     }
 
@@ -221,7 +233,8 @@ public class ExtendedWindow extends javax.swing.JFrame {
         textField.setFont(base);
         Font ui = new Font(Font.DIALOG, Font.PLAIN, config.getExtUiFontSize());
         JComponent[] uiComponents = {lblExtTitle, lblTextFont, lblUiFont,
-                btnServFiles, btnCloseAll, btnSaveCfg, btnLang, btnEditReport, btnStats};
+                btnServFiles, btnCloseAll, btnSaveCfg, btnLang, btnEditReport, btnStats,
+                btnTicTacToe};
         for (JComponent c : uiComponents) {
             c.setFont(ui);
         }
