@@ -173,17 +173,18 @@ public final class MainWindow extends JFrame {
         ItemListener modeListener = new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if (!e.getItem().equals(getSelectedBgSource())) {
+                if (restoring || !e.getItem().equals(getSelectedBgSource())) {
                     return;
                 }
                 boolean spinnerMode = radioSpinner.isSelected();
-                config.setBgSpinnerMode(spinnerMode);
+                // atomic swap to the color remembered by the selected section;
+                // NO dialog is opened here (bug-fix: palette must not pop up
+                // when switching radio buttons)
+                config.switchBgMode(spinnerMode);
                 spinR.setEnabled(spinnerMode);
                 spinG.setEnabled(spinnerMode);
                 spinB.setEnabled(spinnerMode);
-                if (!spinnerMode) {
-                    pickFromPalette();
-                }
+                syncSpinnersFromConfig();
                 applyBackground();
             }
         };
@@ -191,6 +192,16 @@ public final class MainWindow extends JFrame {
         radioPalette.addItemListener(modeListener);
         toolbar.add(radioSpinner);
         toolbar.add(radioPalette);
+
+        JButton pickPaletteButton = new JButton("🎨");
+        pickPaletteButton.setToolTipText(Messages.get(config.getLanguage(), "radio.palette"));
+        pickPaletteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pickFromPalette();
+            }
+        });
+        toolbar.add(pickPaletteButton);
 
         spinR = createChannelSpinner(0);
         spinG = createChannelSpinner(1);
@@ -248,12 +259,11 @@ public final class MainWindow extends JFrame {
 
         radioSpinner.setSelected(config.isBgSpinnerMode());
         radioPalette.setSelected(!config.isBgSpinnerMode());
-        spinR.setValue(Integer.valueOf(config.getBgR()));
-        spinG.setValue(Integer.valueOf(config.getBgG()));
-        spinB.setValue(Integer.valueOf(config.getBgB()));
+        syncSpinnersFromConfig();
         spinR.setEnabled(config.isBgSpinnerMode());
         spinG.setEnabled(config.isBgSpinnerMode());
         spinB.setEnabled(config.isBgSpinnerMode());
+        restoring = false;
 
         applyLanguage();
         applyFontSize();
@@ -383,18 +393,34 @@ public final class MainWindow extends JFrame {
         return radioSpinner.isSelected() ? radioSpinner : radioPalette;
     }
 
+    /** Loads the currently active background RGB into the spinners silently. */
+    private void syncSpinnersFromConfig() {
+        spinR.setValue(Integer.valueOf(config.getBgR()));
+        spinG.setValue(Integer.valueOf(config.getBgG()));
+        spinB.setValue(Integer.valueOf(config.getBgB()));
+    }
+
+    /** Opens the palette chooser ONLY on explicit user action (button click). */
     private void pickFromPalette() {
         Color initial = new Color(config.getBgR(), config.getBgG(), config.getBgB());
         Color chosen = JColorChooser.showDialog(this,
                 Messages.get(config.getLanguage(), "lbl.bgmode"), initial);
         if (chosen != null) {
-            config.setBackgroundRgb(chosen.getRed(), chosen.getGreen(), chosen.getBlue());
-            spinR.setValue(Integer.valueOf(chosen.getRed()));
-            spinG.setValue(Integer.valueOf(chosen.getGreen()));
-            spinB.setValue(Integer.valueOf(chosen.getBlue()));
-        } else {
-            // cancelled: revert to spinner mode to keep UI consistent
-            radioSpinner.setSelected(true);
+            // remember as the palette-section color and make it active
+            config.setPaletteColor(chosen.getRed(), chosen.getGreen(), chosen.getBlue());
+            if (!config.isBgSpinnerMode()) {
+                syncSpinnersFromConfig();
+                applyBackground();
+            } else {
+                // user picked via button while in spinner mode: switch mode
+                config.switchBgMode(false);
+                radioPalette.setSelected(true);
+                spinR.setEnabled(false);
+                spinG.setEnabled(false);
+                spinB.setEnabled(false);
+                syncSpinnersFromConfig();
+                applyBackground();
+            }
         }
     }
 
@@ -403,12 +429,17 @@ public final class MainWindow extends JFrame {
         getContentPane().setBackground(bg);
         toolbar.setBackground(bg);
         reportArea.setBackground(bg);
+        // Bug-fix: do NOT repaint control letters (buttons, labels, spinners).
+        // Only the report text and the status line get an auto-contrast color;
+        // interface elements keep their native L&F colors so they never turn
+        // white-on-white / dark-on-dark.
         Color fg = ContrastUtil.readableTextColor(bg);
         reportArea.setForeground(fg);
         statsLabel.setForeground(fg);
+        // make plain panels transparent so native controls render normally
         for (Component c : toolbar.getComponents()) {
-            if (c instanceof AbstractButton || c instanceof JLabel || c instanceof JSpinner) {
-                c.setForeground(fg);
+            if (c instanceof JPanel) {
+                ((JPanel) c).setOpaque(false);
             }
         }
     }

@@ -19,9 +19,22 @@ public final class AppConfig {
     // background color handling (TZ.md item 5)
     /** true = RGB spinners mode, false = palette mode. */
     private boolean bgSpinnerMode = true;
-    private int bgR = 255;
-    private int bgG = 255;
-    private int bgB = 255;
+    /** Default background: turquoise (бирюзовый), used when no config saved yet. */
+    public static final int DEFAULT_BG_R = 64;
+    public static final int DEFAULT_BG_G = 224;
+    public static final int DEFAULT_BG_B = 208;
+    // Separate colors remembered per mode: spinners keep their own RGB,
+    // palette keeps its own picked RGB (bug-fix: switching radio buttons must
+    // restore the color chosen in that section, not open the chooser).
+    private int bgR = DEFAULT_BG_R;
+    private int bgG = DEFAULT_BG_G;
+    private int bgB = DEFAULT_BG_B;
+    private int spinnerR = DEFAULT_BG_R;
+    private int spinnerG = DEFAULT_BG_G;
+    private int spinnerB = DEFAULT_BG_B;
+    private int paletteR = DEFAULT_BG_R;
+    private int paletteG = DEFAULT_BG_G;
+    private int paletteB = DEFAULT_BG_B;
 
     // remembered directories (TZ.md items 1 and 3)
     private String lastInputDir = System.getProperty("user.home");
@@ -51,9 +64,22 @@ public final class AppConfig {
         c.y = getInt(p, "window.y", c.y);
         c.fontSize = clamp(getInt(p, "font.size", c.fontSize), 8, 48);
         c.bgSpinnerMode = !"palette".equalsIgnoreCase(p.getProperty("bg.mode", "spinner"));
-        c.bgR = clamp(getInt(p, "bg.r", c.bgR), 0, 255);
-        c.bgG = clamp(getInt(p, "bg.g", c.bgG), 0, 255);
-        c.bgB = clamp(getInt(p, "bg.b", c.bgB), 0, 255);
+        // Per-mode remembered colors (new keys). Legacy configs without these
+        // keys fall back to the shared bg.r/g/b value, then to turquoise default.
+        int legacyR = clamp(getInt(p, "bg.r", DEFAULT_BG_R), 0, 255);
+        int legacyG = clamp(getInt(p, "bg.g", DEFAULT_BG_G), 0, 255);
+        int legacyB = clamp(getInt(p, "bg.b", DEFAULT_BG_B), 0, 255);
+        c.spinnerR = clamp(getInt(p, "bg.spinner.r", legacyR), 0, 255);
+        c.spinnerG = clamp(getInt(p, "bg.spinner.g", legacyG), 0, 255);
+        c.spinnerB = clamp(getInt(p, "bg.spinner.b", legacyB), 0, 255);
+        c.paletteR = clamp(getInt(p, "bg.palette.r", legacyR), 0, 255);
+        c.paletteG = clamp(getInt(p, "bg.palette.g", legacyG), 0, 255);
+        c.paletteB = clamp(getInt(p, "bg.palette.b", legacyB), 0, 255);
+        if (c.bgSpinnerMode) {
+            c.bgR = c.spinnerR; c.bgG = c.spinnerG; c.bgB = c.spinnerB;
+        } else {
+            c.bgR = c.paletteR; c.bgG = c.paletteG; c.bgB = c.paletteB;
+        }
         c.lastInputDir = nonBlank(p.getProperty("last.input.dir"), c.lastInputDir);
         c.lastExportDir = nonBlank(p.getProperty("last.export.dir"), c.lastExportDir);
         c.extText = p.getProperty("ext.text", "");
@@ -80,6 +106,12 @@ public final class AppConfig {
         p.setProperty("bg.r", String.valueOf(bgR));
         p.setProperty("bg.g", String.valueOf(bgG));
         p.setProperty("bg.b", String.valueOf(bgB));
+        p.setProperty("bg.spinner.r", String.valueOf(spinnerR));
+        p.setProperty("bg.spinner.g", String.valueOf(spinnerG));
+        p.setProperty("bg.spinner.b", String.valueOf(spinnerB));
+        p.setProperty("bg.palette.r", String.valueOf(paletteR));
+        p.setProperty("bg.palette.g", String.valueOf(paletteG));
+        p.setProperty("bg.palette.b", String.valueOf(paletteB));
         p.setProperty("last.input.dir", lastInputDir);
         p.setProperty("last.export.dir", lastExportDir);
         p.setProperty("ext.text", extText);
@@ -123,7 +155,7 @@ public final class AppConfig {
     }
 
     public File configDirectory() {
-        return new File(System.getProperty("user.home"));
+        return new File(System.getProperty("user.home"), "Velo");
     }
 
     // --- getters / setters ---
@@ -151,6 +183,68 @@ public final class AppConfig {
         this.bgR = clamp(r, 0, 255);
         this.bgG = clamp(g, 0, 255);
         this.bgB = clamp(b, 0, 255);
+        // remember per-mode so switching radio buttons restores each section's color
+        if (bgSpinnerMode) {
+            this.spinnerR = this.bgR;
+            this.spinnerG = this.bgG;
+            this.spinnerB = this.bgB;
+        } else {
+            this.paletteR = this.bgR;
+            this.paletteG = this.bgG;
+            this.paletteB = this.bgB;
+        }
+    }
+
+    /**
+     * Switches background mode and atomically swaps to the color remembered
+     * by that section. Never opens dialogs itself (bug-fix: no palette popup
+     * on radio click).
+     */
+    public void switchBgMode(boolean spinnerMode) {
+        // store current shared color into the outgoing section
+        if (this.bgSpinnerMode) {
+            this.spinnerR = this.bgR;
+            this.spinnerG = this.bgG;
+            this.spinnerB = this.bgB;
+        } else {
+            this.paletteR = this.bgR;
+            this.paletteG = this.bgG;
+            this.paletteB = this.bgB;
+        }
+        this.bgSpinnerMode = spinnerMode;
+        if (spinnerMode) {
+            this.bgR = this.spinnerR;
+            this.bgG = this.spinnerG;
+            this.bgB = this.spinnerB;
+        } else {
+            this.bgR = this.paletteR;
+            this.bgG = this.paletteG;
+            this.bgB = this.paletteB;
+        }
+    }
+
+    /** Sets the palette-section remembered color (after a chooser pick). */
+    public void setPaletteColor(int r, int g, int b) {
+        this.paletteR = clamp(r, 0, 255);
+        this.paletteG = clamp(g, 0, 255);
+        this.paletteB = clamp(b, 0, 255);
+        if (!bgSpinnerMode) {
+            this.bgR = this.paletteR;
+            this.bgG = this.paletteG;
+            this.bgB = this.paletteB;
+        }
+    }
+
+    /** Sets the spinner-section remembered color explicitly. */
+    public void setSpinnerColor(int r, int g, int b) {
+        this.spinnerR = clamp(r, 0, 255);
+        this.spinnerG = clamp(g, 0, 255);
+        this.spinnerB = clamp(b, 0, 255);
+        if (bgSpinnerMode) {
+            this.bgR = this.spinnerR;
+            this.bgG = this.spinnerG;
+            this.bgB = this.spinnerB;
+        }
     }
 
     public String getLastInputDir() { return lastInputDir; }

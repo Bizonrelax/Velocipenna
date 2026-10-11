@@ -19,7 +19,16 @@ public final class ConfigStore {
     private final File configFile;
 
     public ConfigStore() {
-        this(new File(System.getProperty("user.home"), DEFAULT_FILE_NAME));
+        this(defaultConfigFile());
+    }
+
+    /** Settings live in the subfolder ~/Velo (user request). */
+    public static File defaultConfigFile() {
+        File dir = new File(System.getProperty("user.home"), "Velo");
+        if (!dir.isDirectory()) {
+            dir.mkdirs();
+        }
+        return new File(dir, DEFAULT_FILE_NAME);
     }
 
     public ConfigStore(File configFile) {
@@ -43,13 +52,37 @@ public final class ConfigStore {
         } finally {
             closeQuietly(in);
         }
+        // one-time migration: old flat file in the home directory root
+        if (!configFile.isFile()) {
+            File legacy = new File(System.getProperty("user.home"), DEFAULT_FILE_NAME);
+            if (legacy.isFile()) {
+                try {
+                    migrateLegacyFile(legacy, configFile);
+                    in = new FileInputStream(configFile);
+                    props.load(in);
+                } catch (IOException ignored2) {
+                    // stay on defaults
+                } finally {
+                    closeQuietly(in);
+                }
+            }
+        }
         return AppConfig.fromProperties(props);
+    }
+
+    static void migrateLegacyFile(File from, File to) throws IOException {
+        java.nio.file.Files.copy(from.toPath(), to.toPath(),
+                java.nio.file.StandardCopyOption.REPLACE_EXISTING);
     }
 
     public void save(AppConfig config) {
         Properties props = config.toProperties();
         OutputStream out = null;
         try {
+            File parent = configFile.getParentFile();
+            if (parent != null && !parent.isDirectory()) {
+                parent.mkdirs();
+            }
             out = new FileOutputStream(configFile);
             props.store(out, "Velocipenna application config");
         } catch (IOException e) {

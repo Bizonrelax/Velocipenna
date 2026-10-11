@@ -7,6 +7,7 @@ import java.awt.Font;
 
 import javax.swing.AbstractButton;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -39,14 +40,30 @@ public final class AppearanceUtil {
 
     private static void applyRecursive(Container c, Color bg, Color fg, int uiFontSize) {
         c.setBackground(bg);
-        c.setForeground(fg);
+        // Bug-fix: never recolor letters of interface controls (buttons,
+        // labels, spinners, radio buttons) — that made them invisible on
+        // some backgrounds. Only text areas / fields get the contrast color;
+        // plain containers stay transparent so native controls render with
+        // their normal look-and-feel colors.
+        if (c instanceof JTextArea || c instanceof JTextField) {
+            c.setForeground(fg);
+        } else if (!(c instanceof AbstractButton) && !(c instanceof JLabel)) {
+            // plain containers: never touch their foreground, so control
+            // letters keep native colors and stay readable on any background
+            ((Container) c).setForeground(null);
+        }
+        if (c instanceof JPanel) {
+            ((JPanel) c).setOpaque(false);
+        }
         if (c instanceof JLabel) {
             ((JLabel) c).setOpaque(false);
         }
         for (Component comp : c.getComponents()) {
-            if (comp instanceof AbstractButton || comp instanceof JLabel
-                    || comp instanceof JSpinner || comp instanceof JTextField) {
+            if (comp instanceof JTextArea || comp instanceof JTextField) {
                 comp.setForeground(fg);
+            }
+            if (comp instanceof JSpinner || comp instanceof AbstractButton
+                    || comp instanceof JLabel) {
                 Font f = comp.getFont();
                 comp.setFont(f.deriveFont((float) uiFontSize));
             }
