@@ -13,6 +13,8 @@ public final class AnalysisResult {
     private final int yoLower;
     private final int pureCyrillicWords;
     private final int mixedScriptWords;
+    private final int totalWords;
+    private final java.util.List<String> mixedWordList;
     private final String mixedScriptReport;
     private final String charsetName;
 
@@ -22,13 +24,26 @@ public final class AnalysisResult {
                           int pureCyrillicWords, int mixedScriptWords,
                           String mixedScriptReport) {
         this(totalChars, cyrillicCount, upperCounts, lowerCounts, yoUpper, yoLower,
-                pureCyrillicWords, mixedScriptWords, mixedScriptReport, "UTF-8");
+                pureCyrillicWords, mixedScriptWords, 0,
+                java.util.Collections.<String>emptyList(), mixedScriptReport, "UTF-8");
     }
 
     public AnalysisResult(int totalChars, int cyrillicCount,
                           int[] upperCounts, int[] lowerCounts,
                           int yoUpper, int yoLower,
                           int pureCyrillicWords, int mixedScriptWords,
+                          String mixedScriptReport, String charsetName) {
+        this(totalChars, cyrillicCount, upperCounts, lowerCounts, yoUpper, yoLower,
+                pureCyrillicWords, mixedScriptWords, 0,
+                java.util.Collections.<String>emptyList(), mixedScriptReport, charsetName);
+    }
+
+    public AnalysisResult(int totalChars, int cyrillicCount,
+                          int[] upperCounts, int[] lowerCounts,
+                          int yoUpper, int yoLower,
+                          int pureCyrillicWords, int mixedScriptWords,
+                          int totalWords,
+                          java.util.List<String> mixedWordList,
                           String mixedScriptReport, String charsetName) {
         this.totalChars = totalChars;
         this.cyrillicCount = cyrillicCount;
@@ -38,6 +53,9 @@ public final class AnalysisResult {
         this.yoLower = yoLower;
         this.pureCyrillicWords = pureCyrillicWords;
         this.mixedScriptWords = mixedScriptWords;
+        this.totalWords = totalWords;
+        this.mixedWordList = java.util.Collections.unmodifiableList(
+                new java.util.ArrayList<String>(mixedWordList));
         this.mixedScriptReport = mixedScriptReport;
         this.charsetName = charsetName;
     }
@@ -95,6 +113,16 @@ public final class AnalysisResult {
 
     public int getMixedScriptWords() {
         return mixedScriptWords;
+    }
+
+    /** Total number of word tokens found in the text. */
+    public int getTotalWords() {
+        return totalWords;
+    }
+
+    /** Unmodifiable list of words that mix Cyrillic with other scripts (capped). */
+    public java.util.List<String> getMixedWordList() {
+        return mixedWordList;
     }
 
     public String getMixedScriptReport() {

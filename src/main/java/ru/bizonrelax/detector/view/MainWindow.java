@@ -255,6 +255,21 @@ public final class MainWindow extends JFrame {
         int size = ((Number) fontSpinner.getValue()).intValue();
         reportArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, size));
         statsLabel.setFont(statsLabel.getFont().deriveFont((float) size));
+        for (java.awt.Component c : getToolbarComponents()) {
+            if (c instanceof javax.swing.AbstractButton || c instanceof javax.swing.JSpinner) {
+                c.setFont(c.getFont().deriveFont((float) size));
+            }
+        }
+        revalidate();
+    }
+
+    private java.awt.Component[] getToolbarComponents() {
+        for (java.awt.Component c : getContentPane().getComponents()) {
+            if (c instanceof JPanel) {
+                return ((JPanel) c).getComponents();
+            }
+        }
+        return new java.awt.Component[0];
     }
 
     private void persistAndExit() {

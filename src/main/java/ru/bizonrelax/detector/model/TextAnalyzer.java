@@ -14,7 +14,8 @@ import java.util.List;
  */
 public final class TextAnalyzer {
 
-    private static final String WORD_DELIMITERS = " \t\r\n.,;:!?\"'()[]{}-–—…«»/\\@#$%^&*+=|<>~`";
+    /** Maximum number of mixed words listed in a single report. */
+    public static final int MAX_REPORTED_MIXED_WORDS = 500;
 
     /**
      * Reads a file with the given charset and analyzes its content.
@@ -26,6 +27,7 @@ public final class TextAnalyzer {
                 base.getUpperCountsArray(), base.getLowerCountsArray(),
                 base.getYoUpper(), base.getYoLower(),
                 base.getPureCyrillicWords(), base.getMixedScriptWords(),
+                base.getTotalWords(), base.getMixedWordList(),
                 base.getMixedScriptReport(), charset.name());
     }
 
@@ -94,7 +96,8 @@ public final class TextAnalyzer {
         int mixedWords = 0;
         List<String> mixedList = new ArrayList<String>();
 
-        for (String word : splitWords(text)) {
+        List<String> tokens = WordTokenizer.tokenize(text);
+        for (String word : tokens) {
             boolean hasCyr = false;
             boolean hasLatin = false;
             for (int i = 0; i < word.length(); i++) {
@@ -109,7 +112,7 @@ public final class TextAnalyzer {
                 pureWords++;
             } else if (hasCyr && hasLatin) {
                 mixedWords++;
-                if (mixedList.size() < 500) { // cap report size
+                if (mixedList.size() < MAX_REPORTED_MIXED_WORDS) { // cap report size
                     mixedList.add(word);
                 }
             }
@@ -117,34 +120,8 @@ public final class TextAnalyzer {
 
         String report = buildReport(mixedList, mixedWords);
         return new AnalysisResult(text.length(), cyrillicTotal, upper, lower,
-                yoUpper, yoLower, pureWords, mixedWords, report);
-    }
-
-    private List<String> splitWords(String text) {
-        List<String> words = new ArrayList<String>();
-        StringBuilder current = new StringBuilder();
-        for (int i = 0; i < text.length(); i++) {
-            char c = text.charAt(i);
-            if (isDelimiter(c)) {
-                if (current.length() > 0) {
-                    words.add(current.toString());
-                    current.setLength(0);
-                }
-            } else {
-                current.append(c);
-            }
-        }
-        if (current.length() > 0) {
-            words.add(current.toString());
-        }
-        return words;
-    }
-
-    private boolean isDelimiter(char c) {
-        if (WORD_DELIMITERS.indexOf(c) >= 0) {
-            return true;
-        }
-        return Character.getType(c) == Character.SPACE_SEPARATOR;
+                yoUpper, yoLower, pureWords, mixedWords,
+                tokens.size(), mixedList, report, "UTF-8");
     }
 
     private String buildReport(List<String> mixedList, int mixedWords) {
@@ -157,7 +134,7 @@ public final class TextAnalyzer {
             sb.append("  - ").append(w).append('\n');
         }
         if (mixedWords > mixedList.size()) {
-            sb.append("  ... (report truncated at 500 entries)\n");
+            sb.append("  ... (report truncated at ").append(MAX_REPORTED_MIXED_WORDS).append(" entries)\n");
         }
         return sb.toString();
     }

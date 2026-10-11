@@ -38,6 +38,7 @@ public class TextAnalyzerTest {
         assertEquals(0, r.getYoLower());
         assertEquals(4, r.getPureCyrillicWords()); // Привет, мир, Ёлка, мала
         assertEquals(0, r.getMixedScriptWords());
+        assertEquals(4, r.getTotalWords());
     }
 
     @Test
@@ -68,5 +69,15 @@ public class TextAnalyzerTest {
         assertEquals(0, r.getTotalChars());
         assertEquals(0.0, r.getDensityPercent(), 0.0);
         assertEquals("Mixed-script anomalies: none detected.", r.getMixedScriptReport());
+    }
+
+    @Test
+    public void mixedWordListIsExposedForUi() {
+        String mixed = "\u0420" + "o" + "t"; // Cyrillic Р + Latin o,t
+        String text = "слово " + mixed + " ещё " + mixed;
+        AnalysisResult r = analyzer.analyze(text);
+        assertEquals(2, r.getMixedScriptWords());
+        assertEquals(2, r.getMixedWordList().size());
+        assertEquals(mixed, r.getMixedWordList().get(0));
     }
 }
