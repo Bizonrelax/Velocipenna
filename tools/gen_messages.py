@@ -44,6 +44,7 @@ RU = {
  "about.desc": "Описание: локальное приложение для анализа текстов на кириллице и поиска смешения кириллицы с латиницей (омоглифов).",
  "about.usage": "Инструкция: откройте или перетащите .txt-файл; отчёт появится в окне; кнопки «Экспорт», «Буф» сохраняют и копируют отчёт; «Да_^» открывает расширенное окно.",
  "about.build": "Компиляция: нужен JDK 8+, Apache Maven 3.6+ и Eclipse IDE for Java Developers (https://www.eclipse.org/downloads/, https://maven.apache.org/download.cgi). Команда: mvn clean package, запуск: java -jar target/velocipenna.jar.",
+ "about.thirdparty": "Сторонние продукты: Velocipenna использует внешние инструменты сборки (Apache Maven © The Apache Software Foundation, Apache License 2.0; JUnit 4 © Kent Beck, David Saff и соавторы, Eclipse Public License 1.0 — только для тестов; Eclipse IDE © Eclipse Foundation, EPL 2.0; JDK/OpenJDK © Oracle и сообщество OpenJDK) и реализует открытые стандарты PDF (© Adobe), Office Open XML (ECMA-376) и ZIP. Все они остаются под своими лицензиями; полный перечень авторов и лицензий — в файле THIRD-PARTY-NOTICES.md репозитория. Товарные знаки принадлежат их владельцам.",
 }
 
 EN = {
@@ -87,6 +88,7 @@ EN = {
  "about.desc": "Description: local app analyzing Cyrillic texts and detecting mixed Cyrillic/Latin homoglyphs.",
  "about.usage": "Usage: open or drop a .txt file; the report appears in the window; Export/Buf buttons save and copy it; Ext_^ opens the extended window.",
  "about.build": "Build: JDK 8+, Apache Maven 3.6+, Eclipse IDE for Java Developers (https://www.eclipse.org/downloads/, https://maven.apache.org/download.cgi). Run: mvn clean package, then java -jar target/velocipenna.jar.",
+ "about.thirdparty": "Third-party products: Velocipenna uses external build tools (Apache Maven (c) The Apache Software Foundation, Apache License 2.0; JUnit 4 (c) Kent Beck, David Saff et al., Eclipse Public License 1.0 - tests only; Eclipse IDE (c) Eclipse Foundation, EPL 2.0; JDK/OpenJDK (c) Oracle and the OpenJDK community) and implements open standards: PDF (c) Adobe, Office Open XML (ECMA-376) and ZIP. All remain under their own licenses; full author/license list in THIRD-PARTY-NOTICES.md in the repository. Trademarks belong to their respective owners.",
 }
 
 DE = {
@@ -130,6 +132,7 @@ DE = {
  "about.desc": "Beschreibung: lokale Anwendung zur Analyse kyrillischer Texte und zum Auffinden gemischter kyrillisch/lateinischer Homoglyphen.",
  "about.usage": "Anleitung: .txt-Datei öffnen oder per Drag-and-drop; Bericht erscheint im Fenster; Export/Zwf speichern/kopieren; Erw_^ öffnet das Erweiterungsfenster.",
  "about.build": "Kompilierung: JDK 8+, Apache Maven 3.6+, Eclipse IDE for Java Developers (https://www.eclipse.org/downloads/, https://maven.apache.org/download.cgi). Befehl: mvn clean package, Start: java -jar target/velocipenna.jar.",
+ "about.thirdparty": "Drittanbieterprodukte: Velocipenna nutzt externe Build-Werkzeuge (Apache Maven (c) The Apache Software Foundation, Apache License 2.0; JUnit 4 (c) Kent Beck, David Saff u. a., Eclipse Public License 1.0 - nur Tests; Eclipse IDE (c) Eclipse Foundation, EPL 2.0; JDK/OpenJDK (c) Oracle und die OpenJDK-Community) und setzt offene Standards um: PDF (c) Adobe, Office Open XML (ECMA-376) und ZIP. Alle bleiben unter ihren eigenen Lizenzen; vollstaendige Autoren-/Lizenzliste in THIRD-PARTY-NOTICES.md im Repository. Marken gehoeren ihren jeweiligen Eigentuemern.",
 }
 
 ES = {
@@ -173,6 +176,7 @@ ES = {
  "about.desc": "Descripción: aplicación local para analizar textos cirílicos y detectar homoglifos mixtos cirílico/latino.",
  "about.usage": "Uso: abra o arrastre un archivo .txt; el informe aparece en la ventana; Exportar/Por guardan y copian; Ext_^ abre la ventana extendida.",
  "about.build": "Compilación: JDK 8+, Apache Maven 3.6+, Eclipse IDE for Java Developers (https://www.eclipse.org/downloads/, https://maven.apache.org/download.cgi). Comando: mvn clean package, ejecución: java -jar target/velocipenna.jar.",
+ "about.thirdparty": "Productos de terceros: Velocipenna usa herramientas externas de compilacion (Apache Maven (c) The Apache Software Foundation, Apache License 2.0; JUnit 4 (c) Kent Beck, David Saff y otros, Eclipse Public License 1.0 - solo pruebas; Eclipse IDE (c) Eclipse Foundation, EPL 2.0; JDK/OpenJDK (c) Oracle y la comunidad OpenJDK) e implementa estandares abiertos: PDF (c) Adobe, Office Open XML (ECMA-376) y ZIP. Todos mantienen sus propias licencias; lista completa de autores y licencias en THIRD-PARTY-NOTICES.md en el repositorio. Las marcas registradas pertenecen a sus respectivos propietarios.",
 }
 
 ZH = {
@@ -216,6 +220,7 @@ ZH = {
  "about.desc": "说明：本地应用，用于分析西里尔文本并检测西里尔/拉丁混合同形字符。",
  "about.usage": "使用：打开或拖入 .txt 文件；报告显示在窗口中；“导出/复”按钮保存和复制报告；“扩_^”打开扩展窗口。",
  "about.build": "编译：需要 JDK 8+、Apache Maven 3.6+、Eclipse IDE for Java Developers (https://www.eclipse.org/downloads/, https://maven.apache.org/download.cgi)。命令：mvn clean package，运行：java -jar target/velocipenna.jar。",
+ "about.thirdparty": "第三方产品：Velocipenna 使用外部构建工具（Apache Maven © Apache 软件基金会，Apache License 2.0；JUnit 4 © Kent Beck、David Saff 等，Eclipse Public License 1.0 — 仅用于测试；Eclipse IDE © Eclipse 基金会，EPL 2.0；JDK/OpenJDK © Oracle 及 OpenJDK 社区）并实现开放标准：PDF (© Adobe)、Office Open XML (ECMA-376) 和 ZIP。它们均保持各自的原许可证；完整的作者与许可证列表见仓库中的 THIRD-PARTY-NOTICES.md 文件。商标归其各自所有者所有。",
 }
 
 LANGS = [("ru", RU), ("en", EN), ("de", DE), ("es", ES), ("zh", ZH)]

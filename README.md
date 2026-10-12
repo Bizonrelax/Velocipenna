@@ -67,6 +67,8 @@ Eclipse workflow: `File > Import > Maven > Existing Maven Projects` → select t
 
 Dedicated to the public domain under **The Unlicense**. Copy, modify, publish and distribute freely, commercial use included.
 
+**Third-party products:** Velocipenna uses external build/test tools (Apache Maven, JUnit, Eclipse IDE, JDK) and implements open standards (PDF, Office Open XML). Their authors and licenses are listed in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md); they remain under their own licenses and are not covered by The Unlicense. All trademarks mentioned belong to their respective owners.
+
 ---
 
 <a name="velocipenna-русский"></a>
@@ -133,3 +135,5 @@ java -jar target\velocipenna.jar
 ### Лицензия
 
 Проект передан в общественное достояние в рамках **The Unlicense**. Свободное копирование, изменение, публикация и распространение — в исходном и компилированном виде, для любых целей, включая коммерческие.
+
+**Сторонние продукты:** Velocipenna использует внешние инструменты сборки/тестирования (Apache Maven, JUnit, Eclipse IDE, JDK) и реализует открытые стандарты (PDF, Office Open XML). Их авторы и лицензии указаны в файле [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md); эти продукты остаются под своими лицензиями и не охватываются The Unlicense. Все упомянутые товарные знаки принадлежат их законным владельцам.

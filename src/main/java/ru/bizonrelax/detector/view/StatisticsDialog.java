@@ -156,7 +156,8 @@ public final class StatisticsDialog {
         JLabel lblUrl = new JLabel(Messages.get(lang, "about.url"));
         JTextAreaHolder txt = new JTextAreaHolder(
                 Messages.get(lang, "about.desc") + "\n\n" + Messages.get(lang, "about.usage")
-                        + "\n\n" + Messages.get(lang, "about.build"));
+                        + "\n\n" + Messages.get(lang, "about.build")
+                        + "\n\n" + Messages.get(lang, "about.thirdparty"));
         JButton btnCopy = new JButton(Messages.get(lang, "btn.buffer"));
         btnCopy.setToolTipText(Messages.get(lang, "tip.buffer"));
         btnCopy.addActionListener(new ActionListener() {
@@ -170,6 +171,7 @@ public final class StatisticsDialog {
                 sb.append(Messages.get(lang, "about.desc")).append('\n');
                 sb.append(Messages.get(lang, "about.usage")).append('\n');
                 sb.append(Messages.get(lang, "about.build")).append('\n');
+                sb.append(Messages.get(lang, "about.thirdparty")).append('\n');
                 main.copyToClipboard(sb.toString());
             }
         });
